@@ -10,8 +10,8 @@ app.use(express.json({ extended: false }));
 app.get("/", (req, res) => {});
 
 app.use("/api/users", require("./routes/api/users"));
+app.use("/api/auth", require("./routes/api/auth"));
 
 app.listen(PORT, () => {
   console.log(`Server starting on port ${PORT}`);
 });
-// initial
