@@ -17,7 +17,6 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// Login
 router.post(
   "/",
   [
@@ -62,7 +61,7 @@ router.post(
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          res.json({ token });
+          res.header("Authorization", token).json();
         }
       );
     } catch (error) {
