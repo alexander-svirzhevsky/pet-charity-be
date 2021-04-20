@@ -5,44 +5,49 @@ const config = require("config");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 
+const auth = require("../../middleware/auth");
 const User = require("../../db/Schema/User");
+
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json(user);
+  } catch (error) {
+    console.error(error.message);
+  }
+});
 
 router.post(
   "/",
   [
-    check("name", "Name is required").not().isEmpty(),
     check("email", "Please include a valid email").isEmail(),
-    check(
-      "password",
-      "Please enter a password with 6 or more characters"
-    ).isLength({ min: 6 }),
+    check("password", "Password is required").exists(),
   ],
   async (req, res) => {
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { name, email, password } = req.body;
+    const { email, password } = req.body;
 
     try {
       let user = await User.findOne({ email });
 
-      if (user) {
+      if (!user) {
         return res
           .status(400)
-          .json({ errors: [{ msg: "User already exists" }] });
+          .json({ errors: [{ msg: "Invalid Credentials" }] });
       }
 
-      const hashedPassword = await argon2.hash(password);
+      const isMatch = await argon2.verify(user.password, password);
 
-      user = new User({
-        name,
-        email,
-        password: hashedPassword,
-      });
-
-      await user.save();
+      if (!isMatch) {
+        return res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid Credentials" }] });
+      }
 
       const payload = {
         user: {
