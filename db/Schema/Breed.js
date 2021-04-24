@@ -5,6 +5,10 @@ const Breed = new mongoose.Schema({
     type: String,
     required: true,
   },
+  type: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "typeOfAnimal",
+  },
 });
 
 module.exports = mongoose.model("breed", Breed);

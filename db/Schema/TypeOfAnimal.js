@@ -5,7 +5,7 @@ const TypeOfAnimalSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  breed: [
+  breedName: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "breed",

@@ -21,6 +21,10 @@ const AnimalSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "typeOfAnimal",
   },
+  breedName: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "breed",
+  },
 });
 
 module.exports = mongoose.model("animal", AnimalSchema);
