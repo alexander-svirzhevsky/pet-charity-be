@@ -1,11 +1,11 @@
+require("express-async-errors");
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 5000;
+
+const errorMiddleware = require("./middleware/errorHandling");
 const connectDB = require("./db/db");
 
 connectDB();
-
-const Animals = require("./db/Schema/Animal");
 
 app.use(express.json({ extended: false }));
 
@@ -17,6 +17,10 @@ app.use("/api/typeOfAnimal", require("./routes/api/typeOfAnimal"));
 app.use("/api/animal", require("./routes/api/animal"));
 app.use("/api/breed", require("./routes/api/breed"));
 
+app.use(errorMiddleware);
+
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server starting on port ${PORT}`);
+	console.log(`Server starting on port ${PORT}`);
 });
