@@ -19,7 +19,7 @@ const AnimalSchema = new mongoose.Schema({
   },
   type: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "typeOfAnimal",
+    ref: "animalType",
   },
   breedName: {
     type: mongoose.Schema.Types.ObjectId,

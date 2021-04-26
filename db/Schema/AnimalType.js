@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TypeOfAnimalSchema = new mongoose.Schema({
+const AnimalTypeSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
@@ -13,4 +13,4 @@ const TypeOfAnimalSchema = new mongoose.Schema({
   ],
 });
 
-module.exports = mongoose.model("typeOfAnimal", TypeOfAnimalSchema);
+module.exports = mongoose.model("animalType", AnimalTypeSchema);
