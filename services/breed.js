@@ -1,6 +1,7 @@
 const Breed = require("../db/Schema/Breed");
 const AnimalType = require("../db/Schema/AnimalType");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
+const NotFound = require("../utils/errors/NotFound");
 
 async function addBreed(breedName, type) {
   let breed = await Breed.findOne({ breedName });
@@ -10,6 +11,10 @@ async function addBreed(breedName, type) {
   }
 
   const typeId = await AnimalType.findOne({ type: type });
+
+  if (!typeId) {
+    throw new NotFound("Breed not found");
+  }
 
   breed = new Breed({
     breedName,

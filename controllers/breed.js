@@ -5,6 +5,7 @@ const BadRequest = require("../utils/errors/BadRequest");
 
 async function addBreed(req, res) {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     throw new BadRequest(errors.array());
   }

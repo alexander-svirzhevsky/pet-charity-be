@@ -2,9 +2,15 @@ const Breed = require("../db/Schema/Breed");
 const AnimalType = require("../db/Schema/AnimalType");
 const Animal = require("../db/Schema/Animal");
 const NotFound = require("../utils/errors/NotFound");
+const AlreadyExists = require("../utils/errors/AlreadyExists");
 
 async function createAnimal(name, age, sex, type, breedName) {
   const typeId = await AnimalType.findOne({ type: type });
+  const animalId = await Animal.findOne({ name: name });
+
+  if (animalId) {
+    throw new AlreadyExists("Animal already exists");
+  }
 
   if (!typeId) {
     throw new NotFound("Animal type not found");
