@@ -1,20 +1,22 @@
 const jwt = require("jsonwebtoken");
 const config = require("config");
 
-module.exports = function (req, res, next) {
-  const token = req.header("Authorization");
+const InvalidCredentials = require("../utils/errors/InvalidCredentials");
 
-  if (!token) {
-    return res.status(401).json({ msg: "No token, auth denied" });
-  }
+module.exports = function (req, _, next) {
+	const token = req.header("Authorization");
 
-  try {
-    const decoded = jwt.verify(token, config.get("jwtToken"));
+	if (!token) {
+		throw new InvalidCredentials();
+	}
 
-    req.user = decoded.user;
-    next();
-  } catch (error) {
-    console.error(error.message);
-    res.status(401).json({ msg: "Token is not valid" });
-  }
+	try {
+		const decoded = jwt.verify(token, config.get("jwtToken"));
+
+		req.user = decoded.user;
+
+		next();
+	} catch (_) {
+		throw new InvalidCredentials();
+	}
 };

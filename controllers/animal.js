@@ -5,32 +5,24 @@ const BadRequest = require("../utils/errors/BadRequest");
 const BaseResponse = require("../utils/BaseResponse");
 
 async function createAnimal(req, res) {
-  const errors = validationResult(req);
+	const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    throw new BadRequest(errors.array());
-  }
+	if (!errors.isEmpty()) {
+		throw new BadRequest(errors.array());
+	}
 
-  const { name, age, sex, type, breedName } = req.body;
+	const animal = await animalService.createAnimal(req.body);
 
-  const animal = await animalService.createAnimal(
-    name,
-    age,
-    sex,
-    type,
-    breedName
-  );
-
-  res.json(animal);
+	res.json(BaseResponse(animal, "Animal has been successfully created", 201));
 }
 
-async function getAllAnimals(req, res, next) {
-  const animals = await animalService.getAllAnimals();
+async function getAllAnimals(_, res) {
+	const animals = await animalService.getAllAnimals();
 
-  res.json(new BaseResponse(animals));
+	res.json(new BaseResponse(animals));
 }
 
 module.exports = {
-  createAnimal,
-  getAllAnimals,
+	createAnimal,
+	getAllAnimals,
 };

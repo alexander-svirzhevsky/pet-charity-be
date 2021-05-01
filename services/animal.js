@@ -4,43 +4,44 @@ const Animal = require("../db/Schema/Animal");
 const NotFound = require("../utils/errors/NotFound");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
 
-async function createAnimal(name, age, sex, type, breedName) {
-  const typeId = await AnimalType.findOne({ type: type });
-  const animalId = await Animal.findOne({ name: name });
+async function createAnimal({ name, age, sex, type, breedName }) {
+	const animalId = await Animal.findOne({ name });
 
-  if (animalId) {
-    throw new AlreadyExists("Animal already exists");
-  }
+	if (animalId) {
+		throw new AlreadyExists("Animal already exists");
+	}
 
-  if (!typeId) {
-    throw new NotFound("Animal type not found");
-  }
+	const typeId = await AnimalType.findOne({ type });
 
-  const breedId = await Breed.findOne({ breedName: breedName });
+	if (!typeId) {
+		throw new NotFound("Animal type not found");
+	}
 
-  if (!breedId) {
-    throw new NotFound("Breed not found");
-  }
+	const breedId = await Breed.findOne({ breedName: breedName });
 
-  const newAnimal = new Animal({
-    name: name,
-    age: age,
-    sex: sex,
-    type: typeId._id,
-    breedName: breedId._id,
-  });
+	if (!breedId) {
+		throw new NotFound("Breed not found");
+	}
 
-  const animal = await newAnimal.save();
+	const newAnimal = new Animal({
+		name: name,
+		age: age,
+		sex: sex,
+		type: typeId._id,
+		breedName: breedId._id,
+	});
 
-  return animal;
+	await newAnimal.save();
+
+	return newAnimal;
 }
 
 async function getAllAnimals() {
-  const allAnimals = await Animal.find().populate("type").populate("breedName");
-  return allAnimals;
+	const allAnimals = await Animal.find().populate("type").populate("breedName");
+	return allAnimals;
 }
 
 module.exports = {
-  createAnimal,
-  getAllAnimals,
+	createAnimal,
+	getAllAnimals,
 };

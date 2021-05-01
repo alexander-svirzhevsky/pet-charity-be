@@ -2,21 +2,20 @@ const { validationResult } = require("express-validator");
 
 const breedService = require("../services/breed");
 const BadRequest = require("../utils/errors/BadRequest");
+const BaseResponse = require("../utils/BaseResponse");
 
 async function addBreed(req, res) {
-  const errors = validationResult(req);
+	const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    throw new BadRequest(errors.array());
-  }
+	if (!errors.isEmpty()) {
+		throw new BadRequest(errors.array());
+	}
 
-  const { breedName, type } = req.body;
+	const breed = await breedService.addBreed(req.body);
 
-  const addBreed = await breedService.addBreed(breedName, type);
-
-  res.json(addBreed);
+	res.json(new BaseResponse(breed, "Breed has been successfully created", 201));
 }
 
 module.exports = {
-  addBreed,
+	addBreed,
 };

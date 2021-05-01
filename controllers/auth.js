@@ -1,39 +1,38 @@
 const { validationResult } = require("express-validator");
-const config = require("config");
-const jwt = require("jsonwebtoken");
 
+const { createToken } = require("../utils/auth/jwt");
 const authService = require("../services/auth");
 const User = require("../db/Schema/User");
 const BadRequest = require("../utils/errors/BadRequest");
 const BaseResponse = require("../utils/BaseResponse");
 
-async function logIn(req, res) {
-  const errors = validationResult(req);
+async function login(req, res) {
+	const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    throw new BadRequest(errors.array());
-  }
+	if (!errors.isEmpty()) {
+		throw new BadRequest(errors.array());
+	}
 
-  const { email, password } = req.body;
+	const user = await authService.login(req.body);
 
-  let payload = await authService.logIn(email, password);
+	const payload = {
+		user: {
+			id: user.id,
+		},
+	};
 
-  jwt.sign(
-    payload,
-    config.get("jwtToken"),
-    { expiresIn: 360000 },
-    (err, token) => {
-      res.header("Authorization", token).json();
-    }
-  );
+	const token = await createToken(payload);
+
+	res.header("Authorization", token);
+	res.json(new BaseResponse());
 }
 
 async function getAuthUser(req, res) {
-  const user = await User.findById(req.user.id).select("-password");
-  res.json(new BaseResponse(user));
+	const user = await User.findById(req.user.id).select("-password");
+	res.json(new BaseResponse(user));
 }
 
 module.exports = {
-  logIn,
-  getAuthUser,
+	login,
+	getAuthUser,
 };
