@@ -13,7 +13,9 @@ async function createAnimal(req, res) {
 
 	const animal = await animalService.createAnimal(req.body);
 
-	res.json(BaseResponse(animal, "Animal has been successfully created", 201));
+	res.json(
+		new BaseResponse(animal, "Animal has been successfully created", 201)
+	);
 }
 
 async function getAllAnimals(_, res) {

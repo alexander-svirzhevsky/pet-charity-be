@@ -9,9 +9,9 @@ module.exports = async function (req, res, next) {
 		throw new InvalidCredentials();
 	}
 
-	if (!user.isAdmin) {
-		throw new InvalidCredentials();
-	}
+	// if (!user.isAdmin) {
+	// 	throw new InvalidCredentials();
+	// }
 
 	// todo middlware for admin, also create an new property in schema
 	next();
