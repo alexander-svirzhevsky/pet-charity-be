@@ -2,20 +2,19 @@ const { validationResult } = require("express-validator");
 
 const animalTypeService = require("../services/animalType");
 const BadRequest = require("../utils/errors/BadRequest");
+const BaseResponse = require("../utils/BaseResponse");
 
 async function addAnimalType(req, res) {
-  const errors = validationResult(req);
+	const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    throw new BadRequest(errors.array());
-  }
+	if (!errors.isEmpty()) {
+		throw new BadRequest(errors.array());
+	}
 
-  const { type } = req.body;
+	const type = await animalTypeService.addAnimalType(req.body);
 
-  const addType = await animalTypeService.addAnimalType(type);
-
-  res.json(addType);
+	res.json(new BaseResponse(type));
 }
 module.exports = {
-  addAnimalType,
+	addAnimalType,
 };

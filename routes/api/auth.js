@@ -8,12 +8,12 @@ const authController = require("../../controllers/auth");
 router.get("/", auth, authController.getAuthUser);
 
 router.post(
-  "/",
-  [
-    check("email", "Please include a valid email").isEmail(),
-    check("password", "Password is required").exists(),
-  ],
-  authController.logIn
+	"/",
+	[
+		check("email", "Please include a valid email").isEmail(),
+		check("password", "Password is required").exists(),
+	],
+	authController.login
 );
 
 module.exports = router;

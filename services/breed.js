@@ -1,26 +1,31 @@
 const Breed = require("../db/Schema/Breed");
 const AnimalType = require("../db/Schema/AnimalType");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
+const NotFound = require("../utils/errors/NotFound");
 
-async function addBreed(breedName, type) {
-  let breed = await Breed.findOne({ breedName });
+async function addBreed({ breedName, type }) {
+	let breed = await Breed.findOne({ breedName });
 
-  if (breed) {
-    throw new AlreadyExists("Breed already exists");
-  }
+	if (breed) {
+		throw new AlreadyExists("Breed already exists");
+	}
 
-  const typeId = await AnimalType.findOne({ type: type });
+	const typeId = await AnimalType.findOne({ type });
 
-  breed = new Breed({
-    breedName,
-    type: typeId._id,
-  });
+	if (!typeId) {
+		throw new NotFound("Animal type not found");
+	}
 
-  const newBreed = await breed.save();
+	breed = new Breed({
+		breedName,
+		type: typeId._id,
+	});
 
-  return newBreed;
+	await breed.save();
+
+	return breed;
 }
 
 module.exports = {
-  addBreed,
+	addBreed,
 };
