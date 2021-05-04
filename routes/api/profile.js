@@ -3,6 +3,7 @@ const router = express.Router();
 const { check } = require("express-validator");
 
 const profileController = require("../../controllers/profile");
+const authMiddleware = require("../../middleware/auth");
 
 router.post(
   "/",
@@ -17,6 +18,10 @@ router.post(
 
 router.get("/", profileController.getAllProfiles);
 
-router.get("/:animal_id", profileController.getCurrentProfile);
+router.get(
+  "/:animal_id",
+  [authMiddleware],
+  profileController.getCurrentProfile
+);
 
 module.exports = router;
