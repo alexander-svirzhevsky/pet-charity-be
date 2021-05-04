@@ -5,21 +5,14 @@ const AnimalSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "animal",
   },
-  location: [
-    {
-      country: {
-        type: String,
-        required: true,
-      },
-      web: {
-        type: String,
-      },
-      phone: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  location: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: Number,
+    required: true,
+  },
   age: {
     type: String,
     required: true,
