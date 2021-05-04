@@ -2,7 +2,15 @@ const Profile = require("../db/Schema/Profile");
 const Animal = require("../db/Schema/Animal");
 const NotFound = require("../utils/errors/NotFound");
 
-async function createProfile({ name, age, color, size, story }) {
+async function createProfile({
+  name,
+  age,
+  color,
+  size,
+  story,
+  location,
+  phone,
+}) {
   const animalId = await Animal.findOne({ name });
 
   if (!animalId) {
@@ -15,6 +23,8 @@ async function createProfile({ name, age, color, size, story }) {
   if (color) profileFields.color = color;
   if (size) profileFields.size = size;
   if (story) profileFields.story = story;
+  if (location) profileFields.location = location;
+  if (phone) profileFields.phone = phone;
 
   let profile = await Profile.findOne({ animal: animalId._id });
 
