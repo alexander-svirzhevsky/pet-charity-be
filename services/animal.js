@@ -5,6 +5,8 @@ const Profile = require("../db/Schema/Profile");
 const NotFound = require("../utils/errors/NotFound");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
 
+const filter = require("../utils/animal/filter");
+
 async function createAnimal({ name, age, sex, type, breedName }) {
   const animalId = await Animal.findOne({ name });
 
@@ -37,8 +39,21 @@ async function createAnimal({ name, age, sex, type, breedName }) {
   return newAnimal;
 }
 
-async function getAllAnimals() {
+async function getAllAnimals({ type, sex, breedName }) {
+  if (type) {
+    return filter.filterByType(type);
+  }
+
+  if (sex) {
+    return filter.filterByGender(sex);
+  }
+
+  if (breedName) {
+    return filter.filterByBreed(breedName);
+  }
+
   const allAnimals = await Animal.find().populate("type").populate("breedName");
+
   return allAnimals;
 }
 

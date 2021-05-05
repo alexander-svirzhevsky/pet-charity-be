@@ -18,8 +18,8 @@ async function createAnimal(req, res) {
   );
 }
 
-async function getAllAnimals(_, res) {
-  const animals = await animalService.getAllAnimals();
+async function getAllAnimals(req, res) {
+  const animals = await animalService.getAllAnimals(req.query);
 
   res.json(new BaseResponse(animals));
 }
