@@ -39,17 +39,9 @@ async function createAnimal({ name, age, sex, type, breedName }) {
   return newAnimal;
 }
 
-async function getAllAnimals({ type, sex, breedName }) {
-  if (type) {
-    return filter.filterByType(type);
-  }
-
-  if (sex) {
-    return filter.filterByGender(sex);
-  }
-
-  if (breedName) {
-    return filter.filterByBreed(breedName);
+async function getAllAnimals(query) {
+  if (query) {
+    return filter.filtration(query);
   }
 
   const allAnimals = await Animal.find().populate("type").populate("breedName");
