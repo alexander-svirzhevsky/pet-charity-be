@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator");
 const animalService = require("../services/animal");
 const BadRequest = require("../utils/errors/BadRequest");
 const BaseResponse = require("../utils/BaseResponse");
+const NotFound = require("../utils/errors/NotFound");
 
 async function createAnimal(req, res) {
   const errors = validationResult(req);
@@ -20,6 +21,10 @@ async function createAnimal(req, res) {
 
 async function getAllAnimals(req, res) {
   const animals = await animalService.getAllAnimals(req.query);
+  
+  if(animals.length === 0) {
+    throw new NotFound("Animals not found")
+  }
 
   res.json(new BaseResponse(animals));
 }
