@@ -21,16 +21,18 @@ async function createAnimal(req, res) {
 
 async function getAllAnimals(req, res) {
   const animals = await animalService.getAllAnimals(req.query);
-  
-  if(animals.length === 0) {
-    throw new NotFound("Animals not found")
+
+  if (animals.length === 0) {
+    throw new NotFound("Animals not found");
   }
 
   res.json(new BaseResponse(animals));
 }
 
 async function deleteAnimal(req, res) {
-  await animalService.deleteAnimal(req.body);
+  const { id } = req.params;
+
+  await animalService.deleteAnimal(id);
 
   res.json(new BaseResponse("Animal & profile removed"));
 }

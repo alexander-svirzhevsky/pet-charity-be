@@ -4,7 +4,7 @@ const Animal = require("../db/Schema/Animal");
 const Profile = require("../db/Schema/Profile");
 const NotFound = require("../utils/errors/NotFound");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
-const { runInTransaction } = require('mongoose-transact-utils');
+const { runInTransaction } = require("mongoose-transact-utils");
 const filter = require("../utils/animal/filter");
 
 async function createAnimal({ name, age, sex, type, breedName }) {
@@ -49,15 +49,12 @@ async function getAllAnimals(query) {
   return allAnimals;
 }
 
-async function deleteAnimal({ animalId }) {
+async function deleteAnimal(id) {
   await runInTransaction(async () => {
+    await Profile.findOneAndRemove({ animal: id });
 
-    await Profile.findOneAndRemove({ animal: animalId });
-
-    await Animal.findOneAndRemove({ _id: animalId });
+    await Animal.findOneAndRemove({ _id: id });
   });
-
-
 }
 
 module.exports = {

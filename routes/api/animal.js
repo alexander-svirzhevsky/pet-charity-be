@@ -22,7 +22,7 @@ router.post(
 router.get("/", animalController.getAllAnimals);
 
 router.delete(
-  "/",
+  "/:id",
   authMiddleware,
   isAdminMiddleware,
   animalController.deleteAnimal
