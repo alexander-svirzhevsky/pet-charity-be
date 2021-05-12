@@ -5,7 +5,6 @@ const Profile = require("../db/Schema/Profile");
 const NotFound = require("../utils/errors/NotFound");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
 const { runInTransaction } = require("mongoose-transact-utils");
-const filter = require("../utils/animal/filter");
 
 async function createAnimal({ name, age, sex, type, breedName }) {
   const animalId = await Animal.findOne({ name });
@@ -39,14 +38,23 @@ async function createAnimal({ name, age, sex, type, breedName }) {
   return newAnimal;
 }
 
-async function getAllAnimals(query) {
-  if (query) {
-    return filter.filtration(query);
+async function getAllAnimals(filter, limit, skipIndex) {
+  const query = Animal.find(filter)
+    .populate("type")
+    .populate("breedName")
+    .sort({ _id: 1 });
+
+  if (limit) {
+    query.limit(limit);
   }
 
-  const allAnimals = await Animal.find().populate("type").populate("breedName");
+  if (skipIndex) {
+    query.skip(skipIndex);
+  }
 
-  return allAnimals;
+  const animals = await query.exec();
+
+  return animals;
 }
 
 async function deleteAnimal(id) {

@@ -5,6 +5,9 @@ const BadRequest = require("../utils/errors/BadRequest");
 const BaseResponse = require("../utils/BaseResponse");
 const NotFound = require("../utils/errors/NotFound");
 
+const AnimalType = require("../db/Schema/AnimalType");
+const Breed = require("../db/Schema/Breed");
+
 async function createAnimal(req, res) {
   const errors = validationResult(req);
 
@@ -20,7 +23,21 @@ async function createAnimal(req, res) {
 }
 
 async function getAllAnimals(req, res) {
-  const animals = await animalService.getAllAnimals(req.query);
+  const { type, sex, breedName } = req.query;
+
+  const typeId = await AnimalType.findOne({ type });
+  const breedId = await Breed.findOne({ breedName });
+
+  const filter = {};
+  if (type) filter.type = typeId;
+  if (sex) filter.sex = sex;
+  if (breedName) filter.breedName = breedId;
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const skipIndex = (page - 1) * limit;
+
+  const animals = await animalService.getAllAnimals(filter, limit, skipIndex);
 
   if (animals.length === 0) {
     throw new NotFound("Animals not found");
