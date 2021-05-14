@@ -43,7 +43,9 @@ async function getAllAnimals(req, res) {
     throw new NotFound("Animals not found");
   }
 
-  res.json(new BaseResponse(animals));
+  const { animalsList, count } = animals;
+
+  res.json(new BaseResponse(animalsList, count));
 }
 
 async function deleteAnimal(req, res) {

@@ -1,9 +1,10 @@
 class BaseResponse {
-	constructor(data = {}, message = "Ok", statusCode = "200") {
-		this.message = message;
-		this.statusCode = statusCode;
-		this.data = data;
-	}
+  constructor(data = {}, total, message = "Ok", statusCode = "200") {
+    this.message = message;
+    this.statusCode = statusCode;
+    this.data = data;
+    this.total = total;
+  }
 }
 
 module.exports = BaseResponse;

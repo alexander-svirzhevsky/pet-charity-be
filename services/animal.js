@@ -52,9 +52,11 @@ async function getAllAnimals(filter, limit, skipIndex) {
     query.skip(skipIndex);
   }
 
-  const animals = await query.exec();
+  const count = await Animal.countDocuments(filter);
 
-  return animals;
+  const animalsList = await query.exec();
+
+  return { animalsList, count };
 }
 
 async function deleteAnimal(id) {
