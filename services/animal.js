@@ -26,9 +26,9 @@ async function createAnimal({ name, age, sex, type, breedName }) {
 	}
 
 	const newAnimal = new Animal({
-		name: name,
-		age: age,
-		sex: sex,
+		name,
+		age,
+		sex,
 		type: typeId._id,
 		breedName: breedId._id,
 	});
