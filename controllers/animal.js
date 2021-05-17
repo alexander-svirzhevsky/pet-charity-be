@@ -34,7 +34,7 @@ async function getAllAnimals(req, res) {
 	if (breedName) filter.breedName = breedId;
 
 	const page = parseInt(req.query.page) || 1;
-	const limit = parseInt(req.query.limit) || 5;
+	const limit = parseInt(req.query.limit) || 10;
 	const skipIndex = (page - 1) * limit;
 
 	const { animals, count } = await animalService.getAllAnimals(
