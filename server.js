@@ -12,6 +12,7 @@ app.use(express.json({ extended: false }));
 app.get("/", (req, res) => {});
 
 app.use("/api/users", require("./routes/api/users"));
+app.use("/api/googleAuth", require("./routes/api/googleAuth"));
 app.use("/api/auth", require("./routes/api/auth"));
 app.use("/api/animalType", require("./routes/api/animalType"));
 app.use("/", require("./routes/api/animal"));
