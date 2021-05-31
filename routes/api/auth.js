@@ -16,7 +16,11 @@ router.post(
   authController.login
 );
 
-router.put("/forgot-password", authController.forgotPassword);
+router.put(
+  "/forgot-password",
+  [check("email", "Please include a valid email").isEmail()],
+  authController.forgotPassword
+);
 
 router.put("/reset-password", authController.resetPassword);
 

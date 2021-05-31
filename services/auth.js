@@ -8,10 +8,8 @@ const mg = mailgun({ apiKey: config.get("mailgunApiKey"), domain: DOMAIN });
 const InvalidCredentials = require("../utils/errors/InvalidCredentials");
 const NotFound = require("../utils/errors/NotFound");
 const BadRequest = require("../utils/errors/BadRequest");
-const BaseResponse = require("../utils/BaseResponse");
 const User = require("../db/Schema/User");
 const { createTokenResetPass } = require("../utils/auth/jwt");
-const { JsonWebTokenError } = require("jsonwebtoken");
 
 async function login({ email, password }) {
   const user = await User.findOne({ email });
@@ -49,6 +47,7 @@ async function forgotPassword({ email }) {
     subject: "Account Activation Link",
     html: `
 	 	<h2>Please click on given link to reset your password</h2>
+		 <a href="${config.get("clientUrl")}/resetpassword/${token}">click</a> 
 		 <p>${config.get("clientUrl")}/resetpassword/${token}</p> 
 	  `,
   };
@@ -68,26 +67,28 @@ async function resetPassword({ resetLink, newPass }) {
   if (resetLink) {
     const decodedData = jwt.verify(resetLink, config.get("resetPassToken"));
 
-    if (!decodedData) {
+    if (!decodedData.user) {
       throw new InvalidCredentials();
     }
+
     let user = await User.findOne({ resetLink });
 
-    if (!user) {
-      throw new NotFound("User with this token does not exists");
+    if (user) {
+      const hashedPassword = await argon2.hash(newPass);
+
+      user = await User.findOneAndUpdate(
+        { _id: user._id },
+        {
+          password: hashedPassword,
+          resetLink: "",
+        },
+        { new: true }
+      );
+
+      return user;
     }
-    // Problems , need debuging
 
-    // console.log(user._id);
-    // user = await User.findOneAndUpdate(
-    //   { user: user._id },
-    //   { password: newPass },
-    //   { new: true }
-    // );
-
-    await user.save();
-
-    return user;
+    throw new NotFound("User with this token does not exists");
   } else {
     throw new InvalidCredentials();
   }
