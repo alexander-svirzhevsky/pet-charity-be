@@ -33,15 +33,21 @@ async function getAuthUser(req, res) {
 }
 
 async function forgotPassword(req, res) {
-  const user = await authService.forgotPassword(req.body);
+  const errors = validationResult(req);
 
-  return res.json(new BaseResponse(user, "mail sent!"));
+  if (!errors.isEmpty()) {
+    throw new BadRequest(errors.array());
+  }
+
+  await authService.forgotPassword(req.body);
+
+  return res.json(new BaseResponse("mail sent!"));
 }
 
 async function resetPassword(req, res) {
   const newPassword = await authService.resetPassword(req.body);
 
-  return res.json(new BaseResponse(newPassword, "password changed!"));
+  return res.json(new BaseResponse("password changed!"));
 }
 
 module.exports = {
