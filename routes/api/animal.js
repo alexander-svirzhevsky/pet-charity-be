@@ -7,7 +7,7 @@ const isAdminMiddleware = require("../../middleware/isAdmin");
 const animalController = require("../../controllers/animal");
 
 router.post(
-  "/",
+  "/api/animal",
   [
     authMiddleware,
     isAdminMiddleware,
@@ -19,10 +19,10 @@ router.post(
   animalController.createAnimal
 );
 
-router.get("/", animalController.getAllAnimals);
+router.get("/api/animal", animalController.getAllAnimals);
 
 router.delete(
-  "/:id",
+  "/admin/api/animal/:id",
   authMiddleware,
   isAdminMiddleware,
   animalController.deleteAnimal

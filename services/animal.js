@@ -5,60 +5,70 @@ const Profile = require("../db/Schema/Profile");
 const NotFound = require("../utils/errors/NotFound");
 const AlreadyExists = require("../utils/errors/AlreadyExists");
 const { runInTransaction } = require("mongoose-transact-utils");
-const filter = require("../utils/animal/filter");
 
 async function createAnimal({ name, age, sex, type, breedName }) {
-  const animalId = await Animal.findOne({ name });
+	const animalId = await Animal.findOne({ name });
 
-  if (animalId) {
-    throw new AlreadyExists("Animal already exists");
-  }
+	if (animalId) {
+		throw new AlreadyExists("Animal already exists");
+	}
 
-  const typeId = await AnimalType.findOne({ type });
+	const typeId = await AnimalType.findOne({ type });
 
-  if (!typeId) {
-    throw new NotFound("Animal type not found");
-  }
+	if (!typeId) {
+		throw new NotFound("Animal type not found");
+	}
 
-  const breedId = await Breed.findOne({ breedName: breedName });
+	const breedId = await Breed.findOne({ breedName: breedName });
 
-  if (!breedId) {
-    throw new NotFound("Breed not found");
-  }
+	if (!breedId) {
+		throw new NotFound("Breed not found");
+	}
 
-  const newAnimal = new Animal({
-    name: name,
-    age: age,
-    sex: sex,
-    type: typeId._id,
-    breedName: breedId._id,
-  });
+	const newAnimal = new Animal({
+		name,
+		age,
+		sex,
+		type: typeId._id,
+		breedName: breedId._id,
+	});
 
-  await newAnimal.save();
+	await newAnimal.save();
 
-  return newAnimal;
+	return newAnimal;
 }
 
-async function getAllAnimals(query) {
-  if (query) {
-    return filter.filtration(query);
-  }
+async function getAllAnimals(filter, limit, skipIndex) {
+	const query = Animal.find(filter)
+		.populate("type")
+		.populate("breedName")
+		.sort({ _id: 1 });
 
-  const allAnimals = await Animal.find().populate("type").populate("breedName");
+	if (limit) {
+		query.limit(limit);
+	}
 
-  return allAnimals;
+	if (skipIndex) {
+		query.skip(skipIndex);
+	}
+
+	const count = await Animal.countDocuments(filter);
+
+	const animals = await query.exec();
+
+	return { animals, count };
 }
 
 async function deleteAnimal(id) {
-  await runInTransaction(async () => {
-    await Profile.findOneAndRemove({ animal: id });
+	await runInTransaction(async () => {
+		await Profile.findOneAndRemove({ animal: id });
 
-    await Animal.findOneAndRemove({ _id: id });
-  });
+		await Animal.findOneAndRemove({ _id: id });
+	});
 }
 
 module.exports = {
-  createAnimal,
-  getAllAnimals,
-  deleteAnimal,
+	createAnimal,
+	getAllAnimals,
+	deleteAnimal,
 };

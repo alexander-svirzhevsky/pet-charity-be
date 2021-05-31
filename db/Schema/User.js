@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
   },
+  resetLink: {
+    type: String,
+    default: "",
+  },
 });
 
 module.exports = mongoose.model("user", UserSchema);
