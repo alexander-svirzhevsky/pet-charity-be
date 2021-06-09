@@ -28,11 +28,14 @@ async function createAnimal({ name, age, sex, type, breedName }, file) {
   }
 
   if (!file) {
-    throw new BadRequest({
-      msg: "Please attached a photo",
-      param: "file",
-      location: "body",
-    });
+    throw new BadRequest(
+      {
+        msg: "Please attach a photo",
+        param: "file",
+        location: "body",
+      },
+      (message = "Please attach a photo")
+    );
   }
 
   const result = await cloudinary.uploader.upload(file.path);
