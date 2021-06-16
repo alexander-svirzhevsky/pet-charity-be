@@ -6,26 +6,26 @@ const BaseResponse = require("../utils/BaseResponse");
 const { createToken } = require("../utils/auth/jwt");
 
 async function register(req, res) {
-	const errors = validationResult(req);
+  const errors = validationResult(req);
 
-	if (!errors.isEmpty()) {
-		throw new BadRequest(errors.array());
-	}
+  if (!errors.isEmpty()) {
+    throw new BadRequest(errors.array(), errors.errors[0].msg);
+  }
 
-	const user = await userService.register(req.body);
+  const user = await userService.register(req.body);
 
-	const payload = {
-		user: {
-			id: user.id,
-		},
-	};
+  const payload = {
+    user: {
+      id: user.id,
+    },
+  };
 
-	const token = await createToken(payload);
+  const token = await createToken(payload);
 
-	res.header("Authorization", token);
-	res.json(new BaseResponse());
+  res.header("Authorization", token);
+  res.json(new BaseResponse());
 }
 
 module.exports = {
-	register,
+  register,
 };
