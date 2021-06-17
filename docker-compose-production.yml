@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  pet-charity-server:
+    image: alexandersvirzhevsky/pet-charity-server:prod
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+      target: prod
+    container_name: pet-charity-server
+    restart: always
+    ports:
+      - "80:5000"

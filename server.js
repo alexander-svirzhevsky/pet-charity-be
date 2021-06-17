@@ -2,11 +2,35 @@ require("express-async-errors");
 const path = require("path");
 const express = require("express");
 const app = express();
+const swaggerUI = require("swagger-ui-express");
+const booksJsDoc = require("swagger-jsdoc");
 
 const errorMiddleware = require("./middleware/errorHandling");
 const connectDB = require("./db/db");
+const swaggerJSDoc = require("swagger-jsdoc");
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Pet Charity",
+      version: "1.0.0",
+      description: "Pet Charity",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000",
+      },
+    ],
+  },
+  apis: ["./routes/api/animal.js"],
+};
+
+const specs = swaggerJSDoc(options);
 
 connectDB();
+
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 app.use(express.json({ extended: false }));
 
