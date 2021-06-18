@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   pet-charity-server:
-    image: alexandersvirzhevsky/pet-charity-server:prod
+    image: alexandersvirzhevsky/pet-charity-server:prod-1
     build:
       context: .
       dockerfile: Dockerfile.production
