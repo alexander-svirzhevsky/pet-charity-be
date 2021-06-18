@@ -19,11 +19,15 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:5000",
+        url: "https://pet-charity.herokuapp.com",
       },
     ],
   },
-  apis: ["./routes/api/animal.js"],
+  apis: [
+    "./routes/api/animal.js",
+    "./routes/api/auth.js",
+    "./routes/api/users.js",
+  ],
 };
 
 const specs = swaggerJSDoc(options);
